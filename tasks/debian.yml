@@ -1,0 +1,49 @@
+---
+
+- name: install openldap client
+  apt:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  with_items:
+    - nslcd
+    - ldap-utils
+
+
+- name: copy nsswitch and nslcd config
+  template:
+    src: "{{item}}.j2"
+    dest: /etc/{{item}}
+  with_items:
+    - nsswitch.conf
+    - nslcd.conf
+
+
+- name: copy pam common-session config
+  template:
+    src: "{{item}}.j2"
+    dest: /etc/pam.d/{{item}}
+  with_items:
+    - common-session
+
+
+- name: restart nslcd service
+  service:
+    name: "{{item}}"
+    state: restarted
+    enabled: yes
+  with_items:
+    - nscd
+    - nslcd
+
+
+- name: test ldap user exist
+  shell: getent passwd {{ldap_user_id}}
+  register: ldap_user_exist
+
+
+- name: show test ldap user exist result
+  debug: var=ldap_user_exist.stdout
+

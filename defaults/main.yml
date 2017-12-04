@@ -1,0 +1,6 @@
+---
+
+dc_string: dc=example,dc=com
+ldap_user_id: ldapuser
+ldap_server_list:
+  - 127.0.0.1
