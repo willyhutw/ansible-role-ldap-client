@@ -1,0 +1,38 @@
+---
+
+- name: install openldap client
+  yum:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - openldap-clients
+    - nss-pam-ldapd
+
+
+- name: copy nsswitch and nslcd config
+  template:
+    src: "redhat/{{item}}.j2"
+    dest: /etc/{{item}}
+  with_items:
+    - nsswitch.conf
+    - nslcd.conf
+
+
+- name: restart nslcd service
+  service:
+    name: "{{item}}"
+    state: restarted
+    enabled: yes
+  with_items:
+    - nscd
+    - nslcd
+
+
+- name: test ldap user exist
+  shell: getent passwd {{ldap_user_id}}
+  register: ldap_user_exist
+
+
+- name: show test ldap user exist result
+  debug: var=ldap_user_exist.stdout
+

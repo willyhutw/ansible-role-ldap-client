@@ -14,7 +14,7 @@
 
 - name: copy nsswitch and nslcd config
   template:
-    src: "{{item}}.j2"
+    src: "debian/{{item}}.j2"
     dest: /etc/{{item}}
   with_items:
     - nsswitch.conf
@@ -23,7 +23,7 @@
 
 - name: copy pam common-session config
   template:
-    src: "{{item}}.j2"
+    src: "debian/{{item}}.j2"
     dest: /etc/pam.d/{{item}}
   with_items:
     - common-session
